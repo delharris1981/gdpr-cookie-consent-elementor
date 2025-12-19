@@ -1,0 +1,135 @@
+/**
+ * Admin Styles
+ *
+ * @package GDPR_Cookie_Consent_Elementor
+ */
+
+.gdpr-admin-tabs {
+	margin-top: 20px;
+}
+
+.gdpr-admin-tabs .nav-tab-wrapper {
+	border-bottom: 1px solid #ccc;
+	margin-bottom: 20px;
+}
+
+.gdpr-admin-tabs .tab-content {
+	display: none;
+}
+
+.gdpr-admin-tabs .tab-content.active {
+	display: block;
+}
+
+.gdpr-admin-tabs .tab-content h2 {
+	margin-top: 0;
+}
+
+.gdpr-admin-tabs table {
+	margin-top: 20px;
+}
+
+.gdpr-admin-tabs .assign-category {
+	min-width: 200px;
+}
+
+/* Modal Styles */
+.gdpr-modal {
+	display: none;
+	position: fixed;
+	z-index: 100000;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+	background-color: rgba(0, 0, 0, 0.5);
+}
+
+.gdpr-modal-content {
+	background-color: #fefefe;
+	margin: 5% auto;
+	padding: 0;
+	border: 1px solid #888;
+	width: 90%;
+	max-width: 600px;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	border-radius: 4px;
+}
+
+.gdpr-modal-header {
+	padding: 20px;
+	border-bottom: 1px solid #ddd;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	background: #fff;
+	border-radius: 4px 4px 0 0;
+}
+
+.gdpr-modal-header h2 {
+	margin: 0;
+	font-size: 20px;
+}
+
+.gdpr-modal-close {
+	color: #aaa;
+	font-size: 28px;
+	font-weight: bold;
+	cursor: pointer;
+	line-height: 20px;
+}
+
+.gdpr-modal-close:hover,
+.gdpr-modal-close:focus {
+	color: #000;
+}
+
+.gdpr-modal-body {
+	padding: 20px;
+	background: #fff;
+}
+
+.gdpr-modal-footer {
+	padding: 15px 20px;
+	border-top: 1px solid #ddd;
+	text-align: right;
+	background: #f9f9f9;
+	border-radius: 0 0 4px 4px;
+}
+
+.gdpr-modal-footer .button {
+	margin-left: 10px;
+}
+
+.gdpr-modal-body .form-table th {
+	width: 200px;
+	padding: 20px 10px 20px 0;
+}
+
+.gdpr-modal-body .form-table td {
+	padding: 15px 10px;
+}
+
+.gdpr-modal-body .required {
+	color: #dc3232;
+}
+
+@media screen and (max-width: 782px) {
+	.gdpr-modal-content {
+		width: 95%;
+		margin: 10% auto;
+	}
+
+	.gdpr-modal-body .form-table th,
+	.gdpr-modal-body .form-table td {
+		display: block;
+		width: 100%;
+		padding: 10px 0;
+	}
+
+	.gdpr-modal-body .form-table th {
+		padding-bottom: 5px;
+	}
+}
+
