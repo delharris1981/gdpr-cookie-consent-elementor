@@ -1,11 +1,11 @@
 <?php
 /**
  * Plugin Name: GDPR Cookie Consent Elementor
- * Plugin URI: https://example.com/gdpr-cookie-consent-elementor
+ * Plugin URI: https://github.com/delharris1981/gdpr-cookie-consent-elementor/tree/main
  * Description: A custom Elementor widget for GDPR cookie consent with customizable text, buttons, and styling options. Blocks all cookies when declined.
  * Version: 1.2.0
- * Author: Your Name
- * Author URI: https://example.com
+ * Author: Panda ADV
+ * Author URI: 
  * Requires PHP: 8.2
  * Requires at least: 6.8
  * Text Domain: gdpr-cookie-consent-elementor
