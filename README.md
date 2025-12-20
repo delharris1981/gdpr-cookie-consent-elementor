@@ -1,6 +1,6 @@
 # GDPR Cookie Consent Elementor
 
-![Version](https://img.shields.io/badge/version-1.2.0-blue.svg)
+![Version](https://img.shields.io/badge/version-1.2.1-blue.svg)
 ![WordPress](https://img.shields.io/badge/WordPress-6.8%2B-blue.svg)
 ![PHP](https://img.shields.io/badge/PHP-8.2%2B-purple.svg)
 ![License](https://img.shields.io/badge/license-GPLv2%2B-green.svg)
@@ -165,6 +165,17 @@ Yes! The plugin includes a preferences center modal that users can access via th
 The plugin monitors cookie creation on your site and automatically detects new cookies. You can view all detected cookies in the admin panel under "Detected Cookies" and map them to appropriate categories.
 
 ## Changelog
+
+### [1.2.1] - 2025-12-19
+
+#### Security
+- Improved cookie key hashing: Replaced MD5 with SHA-256 for cookie detection and pattern learning
+- Enhanced test cookie functionality: Added Secure flag support for HTTPS connections in admin cookie detection test
+
+#### Changed
+- Cookie detector now uses SHA-256 hashing for cookie key generation
+- Pattern learner now uses SHA-256 hashing for pattern key generation
+- Admin cookie detection test now properly handles Secure flag based on connection protocol
 
 ### [1.2.0] - 2025-12-18
 

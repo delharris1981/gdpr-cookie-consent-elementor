@@ -223,7 +223,7 @@ class Cookie_Detector {
 		$detected = $this->get_detected_cookies();
 
 		// Create unique key for this cookie.
-		$cookie_key = md5( $name . '|' . $domain . '|' . $path );
+		$cookie_key = hash( 'sha256', $name . '|' . $domain . '|' . $path );
 
 		// Check if already detected.
 		if ( isset( $detected[ $cookie_key ] ) ) {

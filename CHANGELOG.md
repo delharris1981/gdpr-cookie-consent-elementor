@@ -5,6 +5,24 @@ All notable changes to the GDPR Cookie Consent Elementor plugin will be document
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.1] - 2025-12-19
+
+### Security
+- Improved cookie key hashing: Replaced MD5 with SHA-256 for cookie detection and pattern learning
+- Enhanced test cookie functionality: Added Secure flag support for HTTPS connections in admin cookie detection test
+
+### Changed
+- Cookie detector now uses SHA-256 hashing for cookie key generation (more secure than MD5)
+- Pattern learner now uses SHA-256 hashing for pattern key generation (more secure than MD5)
+- Admin cookie detection test now properly handles Secure flag based on connection protocol
+
+### Technical Details
+- Updated `Cookie_Detector::detect_cookie()` to use `hash('sha256')` instead of `md5()`
+- Updated `Cookie_Pattern_Learner::learn_from_assignment()` to use `hash('sha256')` instead of `md5()`
+- Admin JavaScript now conditionally adds Secure flag to test cookies when on HTTPS
+
+---
+
 ## [1.2.0] - 2025-12-18
 
 ### Added

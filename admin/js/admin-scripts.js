@@ -364,7 +364,9 @@
 		$button.prop('disabled', true).text('Testing...');
 
 		// Set a test cookie via JavaScript.
-		document.cookie = 'gdpr_test_cookie=test_value; path=/; max-age=60';
+		// Note: Secure flag requires HTTPS. In local development, this may not work.
+		var secureFlag = window.location.protocol === 'https:' ? '; Secure' : '';
+		document.cookie = 'gdpr_test_cookie=test_value; path=/; max-age=60' + secureFlag;
 
 		// Also trigger detection via AJAX.
 		$.ajax({

@@ -41,7 +41,7 @@ class Cookie_Pattern_Learner {
 		$patterns = $this->extract_patterns( $cookie_name );
 
 		foreach ( $patterns as $pattern ) {
-			$pattern_key = md5( $pattern . '|' . $category_id );
+			$pattern_key = hash( 'sha256', $pattern . '|' . $category_id );
 
 			if ( isset( $learned[ $pattern_key ] ) ) {
 				// Update existing pattern.
