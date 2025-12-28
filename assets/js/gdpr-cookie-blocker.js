@@ -36,9 +36,7 @@
 			// Check for category preferences first.
 			const categoryPrefs = getCategoryPreferences();
 
-			// #region agent log
-			fetch('http://127.0.0.1:7242/ingest/00d237e4-bec4-4982-96be-f6cd6aee5b45',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'gdpr-cookie-blocker.js:18',message:'shouldBlockCookies called',data:{categoryPrefs:categoryPrefs,hasCategoryPrefs:categoryPrefs && Object.keys(categoryPrefs).length > 0},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'F'})}).catch(()=>{});
-			// #endregion
+
 
 			if (categoryPrefs && Object.keys(categoryPrefs).length > 0) {
 				// In category mode, we don't block all cookies here.
@@ -49,9 +47,7 @@
 			// Fallback to simple mode.
 			const preference = sessionStorage.getItem('gdpr_cookie_consent_preference');
 
-			// #region agent log
-			fetch('http://127.0.0.1:7242/ingest/00d237e4-bec4-4982-96be-f6cd6aee5b45',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'gdpr-cookie-blocker.js:31',message:'Simple mode preference check',data:{preference:preference,shouldBlock:preference === 'declined'},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
-			// #endregion
+
 
 			return preference === 'declined';
 		} catch (e) {
@@ -144,9 +140,7 @@
 
 		const category = getCookieCategory(cookieName, domain, path);
 
-		// #region agent log
-		fetch('http://127.0.0.1:7242/ingest/00d237e4-bec4-4982-96be-f6cd6aee5b45',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'gdpr-cookie-blocker.js:88',message:'shouldBlockCookieByCategory called',data:{cookieName:cookieName,category:category,categoryPrefs:categoryPrefs,isAllowed:category ? categoryPrefs[category] : null,shouldBlock:category ? !categoryPrefs[category] : false},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
-		// #endregion
+
 
 		if (!category) {
 			// No category found - check if all non-essential categories are declined.

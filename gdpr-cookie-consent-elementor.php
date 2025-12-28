@@ -3,7 +3,7 @@
  * Plugin Name: GDPR Cookie Consent Elementor
  * Plugin URI: https://github.com/delharris1981/gdpr-cookie-consent-elementor/tree/main
  * Description: A custom Elementor widget for GDPR cookie consent with customizable text, buttons, and styling options. Blocks all cookies when declined.
- * Version: 1.2.1
+ * Version: 1.3.0
  * Author: Panda ADV
  * Author URI: 
  * Requires PHP: 8.2
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Define plugin constants.
-define( 'GDPR_CCE_VERSION', '1.2.1' );
+define( 'GDPR_CCE_VERSION', '1.3.0' );
 define( 'GDPR_CCE__FILE__', __FILE__ );
 define( 'GDPR_CCE_PLUGIN_BASE', plugin_basename( GDPR_CCE__FILE__ ) );
 define( 'GDPR_CCE_PATH', plugin_dir_path( GDPR_CCE__FILE__ ) );

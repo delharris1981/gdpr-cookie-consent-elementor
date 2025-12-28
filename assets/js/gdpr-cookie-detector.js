@@ -6,7 +6,7 @@
  * @package GDPR_Cookie_Consent_Elementor
  */
 
-(function() {
+(function () {
 	'use strict';
 
 	/**
@@ -74,7 +74,7 @@
 			clearTimeout(detectionTimeout);
 		}
 
-		detectionTimeout = setTimeout(function() {
+		detectionTimeout = setTimeout(function () {
 			sendDetectedCookies();
 		}, 2000);
 	}
@@ -120,16 +120,16 @@
 			data: {
 				action: 'gdpr_log_detected_cookie',
 				nonce: nonce,
-				cookies: detectionBuffer.map(function(item) {
+				cookies: detectionBuffer.map(function (item) {
 					return item.cookie;
 				}),
 				source: detectionBuffer[0].source || 'javascript'
 			},
-			success: function() {
+			success: function () {
 				// Clear buffer on success.
 				detectionBuffer = [];
 			},
-			error: function() {
+			error: function () {
 				// Silently fail - detection is not critical.
 			}
 		});
@@ -149,31 +149,27 @@
 			// Try alternative approach if descriptor not available.
 			try {
 				// Store original setter reference.
-				var originalSet = function(value) {
+				var originalSet = function (value) {
 					// This will be overridden below.
 				};
-				
+
 				// Try to capture original behavior.
 				var testCookie = document.cookie;
-				
+
 				// Override with basic implementation.
 				Object.defineProperty(document, 'cookie', {
-					get: function() {
+					get: function () {
 						return document.cookie;
 					},
-					set: function(value) {
+					set: function (value) {
 						logCookie(value, 'javascript');
-						// Try to set cookie using original method.
-						try {
-							// Use eval to access original setter (not ideal but works).
-							eval('document.cookie = "' + value.replace(/"/g, '\\"') + '"');
-						} catch(e) {
-							// Fallback: just log, don't set.
-						}
+						// Use direct assignment instead of eval.
+						// Note: This fallback is only used if Object.getOwnPropertyDescriptor failed.
+						document.cookie = value;
 					},
 					configurable: true
 				});
-			} catch(e) {
+			} catch (e) {
 				console.warn('GDPR Cookie Detector: Could not intercept document.cookie', e);
 			}
 			return;
@@ -185,7 +181,7 @@
 		// Override setter to log cookies.
 		Object.defineProperty(document, 'cookie', {
 			get: originalDescriptor.get,
-			set: function(value) {
+			set: function (value) {
 				// Log cookie before setting.
 				logCookie(value, 'javascript');
 				// Call original setter.
@@ -199,7 +195,7 @@
 	// This ensures we catch cookies set early in page load.
 	try {
 		initCookieInterception();
-	} catch(e) {
+	} catch (e) {
 		// If immediate init fails, try on DOM ready.
 		if (document.readyState === 'loading') {
 			document.addEventListener('DOMContentLoaded', initCookieInterception);
@@ -211,7 +207,7 @@
 	// Also intercept wpCookies if available.
 	if (typeof window.wpCookies !== 'undefined' && window.wpCookies.set) {
 		const originalWpCookiesSet = window.wpCookies.set;
-		window.wpCookies.set = function(name, value, expires, path, domain, secure) {
+		window.wpCookies.set = function (name, value, expires, path, domain, secure) {
 			// Build cookie string for logging.
 			let cookieString = name + '=' + value;
 			if (path) {
@@ -226,7 +222,7 @@
 	}
 
 	// Send any remaining cookies on page unload.
-	window.addEventListener('beforeunload', function() {
+	window.addEventListener('beforeunload', function () {
 		if (detectionBuffer.length > 0) {
 			// Use sendBeacon for reliability on page unload.
 			let nonce = '';
@@ -249,7 +245,7 @@
 			const formData = new FormData();
 			formData.append('action', 'gdpr_log_detected_cookie');
 			formData.append('nonce', nonce);
-			formData.append('cookies', JSON.stringify(detectionBuffer.map(function(item) {
+			formData.append('cookies', JSON.stringify(detectionBuffer.map(function (item) {
 				return item.cookie;
 			})));
 			formData.append('source', detectionBuffer[0].source || 'javascript');
@@ -266,7 +262,7 @@
 						data: {
 							action: 'gdpr_log_detected_cookie',
 							nonce: nonce,
-							cookies: detectionBuffer.map(function(item) {
+							cookies: detectionBuffer.map(function (item) {
 								return item.cookie;
 							}),
 							source: detectionBuffer[0].source || 'javascript'
@@ -278,7 +274,7 @@
 	});
 
 	// Also send cookies periodically (every 5 seconds) to ensure nothing is missed.
-	setInterval(function() {
+	setInterval(function () {
 		if (detectionBuffer.length > 0) {
 			sendDetectedCookies();
 		}

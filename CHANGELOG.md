@@ -5,6 +5,23 @@ All notable changes to the GDPR Cookie Consent Elementor plugin will be document
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2025-12-28
+
+### Security
+- Fixed CWE-319: Removed debug logging and telemetry code transmitting user data over unencrypted HTTP (Cleartext Transmission of Sensitive Information)
+- Fixed critical JavaScript injection vulnerability: Replaced dangerous `eval()` usage in cookie detection with direct assignment
+- Enhanced stability: Refactored property descriptor fallbacks to prevent potential recursion and browser crashes
+
+### Changed
+- Removed all development-related "agent log" blocks from production scripts
+- Cleaned up assets/js files for production readiness
+
+### Technical Details
+- Removed `fetch()` calls to localhost ingest server in `gdpr-cookie-blocker.js` and `gdpr-widget-frontend.js`
+- Replaced `eval()` with `document.cookie = value` in `gdpr-cookie-detector.js` fallback logic
+
+---
+
 ## [1.2.1] - 2025-12-19
 
 ### Security
