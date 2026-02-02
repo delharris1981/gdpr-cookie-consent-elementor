@@ -267,10 +267,11 @@
 							const domain = domains[d];
 							const domainPart = domain ? ';domain=' + domain : '';
 							const securePart = isSecure ? ';secure' : '';
-							document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=' + paths[p] + domainPart + securePart;
+							const sameSitePart = ';SameSite=Lax';
+							document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=' + paths[p] + domainPart + securePart + sameSitePart;
 							// Also try with explicit secure flag to catch cookies set with secure=true.
 							if (!isSecure) {
-								document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=' + paths[p] + domainPart + ';secure';
+								document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=' + paths[p] + domainPart + ';secure' + sameSitePart;
 							}
 						}
 					}
@@ -307,10 +308,11 @@
 								const domain = domains[d];
 								const domainPart = domain ? ';domain=' + domain : '';
 								const securePart = isSecure ? ';secure' : '';
-								document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=' + paths[p] + domainPart + securePart;
+								const sameSitePart = ';SameSite=Lax';
+								document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=' + paths[p] + domainPart + securePart + sameSitePart;
 								// Also try with explicit secure flag to catch cookies set with secure=true.
 								if (!isSecure) {
-									document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=' + paths[p] + domainPart + ';secure';
+									document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=' + paths[p] + domainPart + ';secure' + sameSitePart;
 								}
 							}
 						}

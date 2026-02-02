@@ -7,7 +7,7 @@
  * @package GDPR_Cookie_Consent_Elementor
  */
 
-(function() {
+(function () {
 	'use strict';
 
 	/**
@@ -111,7 +111,7 @@
 		// For now, we'll check common categories: analytics, marketing, functional
 		const nonEssentialCategories = ['analytics', 'marketing', 'functional'];
 		let allDeclined = true;
-		
+
 		for (let i = 0; i < nonEssentialCategories.length; i++) {
 			const catId = nonEssentialCategories[i];
 			if (categoryPrefs[catId] === true) {
@@ -119,7 +119,7 @@
 				break;
 			}
 		}
-		
+
 		return allDeclined;
 	}
 
@@ -156,10 +156,10 @@
 
 		// Check if user allowed this category.
 		const shouldBlock = !categoryPrefs[category];
-		
+
 		// Note: Cookie deletion happens in the setter, not here, to avoid performance issues.
 		// The setter will prevent the cookie from being set, which is more efficient.
-		
+
 		return shouldBlock;
 	}
 
@@ -177,12 +177,12 @@
 			const cookies = cookieString.split(';');
 			const hostname = window.location.hostname;
 			const paths = ['/', window.location.pathname];
-			
+
 			for (let i = 0; i < cookies.length; i++) {
 				const cookie = cookies[i];
 				const eqPos = cookie.indexOf('=');
 				const name = eqPos > -1 ? cookie.substr(0, eqPos).trim() : cookie.trim();
-				
+
 				if (!name) {
 					continue;
 				}
@@ -203,12 +203,13 @@
 						const domainPart = domain ? ';domain=' + domain : '';
 						const isSecure = window.location.protocol === 'https:';
 						const securePart = isSecure ? ';secure' : '';
-						
+						const sameSitePart = ';SameSite=Lax';
+
 						// Try with secure flag if on HTTPS.
-						document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=' + path + domainPart + securePart;
+						document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=' + path + domainPart + securePart + sameSitePart;
 						// Also try with explicit secure flag to catch cookies set with secure=true.
 						if (!isSecure) {
-							document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=' + path + domainPart + ';secure';
+							document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=' + path + domainPart + ';secure' + sameSitePart;
 						}
 					}
 				}
@@ -232,27 +233,28 @@
 
 			const cookies = cookieString.split(';');
 			const hostname = window.location.hostname;
-			
+
 			for (let i = 0; i < cookies.length; i++) {
 				const cookie = cookies[i];
 				const eqPos = cookie.indexOf('=');
 				const name = eqPos > -1 ? cookie.substr(0, eqPos).trim() : cookie.trim();
-				
+
 				if (name && name.indexOf(prefix) === 0) {
 					// Delete this specific cookie.
 					const domains = ['', hostname, '.' + hostname, window.location.host];
 					const paths = ['/', window.location.pathname];
 					const isSecure = window.location.protocol === 'https:';
-					
+
 					for (let d = 0; d < domains.length; d++) {
 						for (let p = 0; p < paths.length; p++) {
 							const domain = domains[d];
 							const domainPart = domain ? ';domain=' + domain : '';
 							const securePart = isSecure ? ';secure' : '';
-							document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=' + paths[p] + domainPart + securePart;
+							const sameSitePart = ';SameSite=Lax';
+							document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=' + paths[p] + domainPart + securePart + sameSitePart;
 							// Also try with explicit secure flag to catch cookies set with secure=true.
 							if (!isSecure) {
-								document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=' + paths[p] + domainPart + ';secure';
+								document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=' + paths[p] + domainPart + ';secure' + sameSitePart;
 							}
 						}
 					}
@@ -276,16 +278,17 @@
 			const domains = domain ? [domain] : ['', hostname, '.' + hostname, window.location.host];
 			const paths = path ? [path] : ['/', window.location.pathname];
 			const isSecure = window.location.protocol === 'https:';
-			
+
 			for (let d = 0; d < domains.length; d++) {
 				for (let p = 0; p < paths.length; p++) {
 					const dom = domains[d];
 					const domainPart = dom ? ';domain=' + dom : '';
 					const securePart = isSecure ? ';secure' : '';
-					document.cookie = cookieName + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=' + paths[p] + domainPart + securePart;
+					const sameSitePart = ';SameSite=Lax';
+					document.cookie = cookieName + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=' + paths[p] + domainPart + securePart + sameSitePart;
 					// Also try with explicit secure flag to catch cookies set with secure=true.
 					if (!isSecure) {
-						document.cookie = cookieName + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=' + paths[p] + domainPart + ';secure';
+						document.cookie = cookieName + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=' + paths[p] + domainPart + ';secure' + sameSitePart;
 					}
 				}
 			}
@@ -302,7 +305,7 @@
 		if (!categoryPrefs || Object.keys(categoryPrefs).length === 0) {
 			return;
 		}
-		
+
 		// Delete cookies for declined categories.
 		if (categoryPrefs['analytics'] === false) {
 			deleteCookiesByPrefix('sbjs_');
@@ -321,7 +324,7 @@
 	 */
 	let originalCookieDescriptor = null;
 	let cookieBlockingActive = false;
-	
+
 	// Check for existing preferences immediately and activate blocking if needed.
 	// This happens before DOM is ready to catch early cookie setting.
 	// Only activate if we're not in a reload situation (check for reload flag).
@@ -332,15 +335,15 @@
 			originalCookieDescriptor = Object.getOwnPropertyDescriptor(Document.prototype, 'cookie') ||
 				Object.getOwnPropertyDescriptor(HTMLDocument.prototype, 'cookie') ||
 				Object.getOwnPropertyDescriptor(window, 'cookie');
-			
+
 			if (!originalCookieDescriptor) {
 				try {
 					const testCookie = document.cookie;
 					originalCookieDescriptor = {
-						get: function() {
+						get: function () {
 							return document.cookie;
 						},
-						set: function(value) {
+						set: function (value) {
 							// Will be overridden below.
 						},
 						configurable: true
@@ -350,20 +353,20 @@
 				}
 			}
 		}
-		
+
 		// Activate blocking immediately if we have the descriptor.
 		if (originalCookieDescriptor && !cookieBlockingActive) {
 			try {
 				Object.defineProperty(document, 'cookie', {
-					get: function() {
+					get: function () {
 						return originalCookieDescriptor.get.call(this);
 					},
-					set: function(value) {
+					set: function (value) {
 						// Parse cookie name from value.
 						const cookieParts = value.split(';');
 						const nameValue = cookieParts[0].split('=');
 						const cookieName = nameValue[0].trim();
-						
+
 						// Extract domain and path if available.
 						let domain = '';
 						let path = '';
@@ -375,7 +378,7 @@
 								path = part.substring(5).trim();
 							}
 						}
-						
+
 						// Check if this cookie should be blocked.
 						if (shouldBlockCookieByCategory(cookieName, domain, path)) {
 							return false;
@@ -390,10 +393,10 @@
 			}
 		}
 	}
-	
+
 	// Clear reload flag after a short delay (page has loaded).
 	if (isCurrentlyReloading) {
-		setTimeout(function() {
+		setTimeout(function () {
 			sessionStorage.removeItem('gdpr_reloading');
 		}, 1000);
 	}
@@ -413,10 +416,10 @@
 				try {
 					const testCookie = document.cookie;
 					originalCookieDescriptor = {
-						get: function() {
+						get: function () {
 							return document.cookie;
 						},
-						set: function(value) {
+						set: function (value) {
 							// This will be overridden below.
 						},
 						configurable: true
@@ -430,7 +433,7 @@
 		const shouldBlock = shouldBlockCookies();
 		const categoryPrefs = getCategoryPreferences();
 		const hasCategoryPrefs = categoryPrefs && Object.keys(categoryPrefs).length > 0;
-		
+
 		// Activate blocking if:
 		// 1. Simple mode: shouldBlock is true
 		// 2. Category mode: category preferences exist (we need to check each cookie individually)
@@ -449,17 +452,17 @@
 			// Override document.cookie setter.
 			try {
 				Object.defineProperty(document, 'cookie', {
-					get: function() {
+					get: function () {
 						// In category mode, we can't filter the getter easily.
 						// Return all cookies - blocking happens in setter.
 						return originalCookieDescriptor.get.call(this);
 					},
-					set: function(value) {
+					set: function (value) {
 						// Parse cookie name from value.
 						const cookieParts = value.split(';');
 						const nameValue = cookieParts[0].split('=');
 						const cookieName = nameValue[0].trim();
-						
+
 						// Extract domain and path if available.
 						let domain = '';
 						let path = '';
@@ -500,7 +503,7 @@
 		// Block WordPress wpCookies if available.
 		if (typeof window.wpCookies !== 'undefined' && window.wpCookies.set) {
 			const originalWpCookiesSet = window.wpCookies.set;
-			window.wpCookies.set = function(name, value, expires, path, domain, secure) {
+			window.wpCookies.set = function (name, value, expires, path, domain, secure) {
 				if (shouldBlockCookieByCategory(name, domain || '', path || '')) {
 					return false;
 				}
@@ -512,7 +515,7 @@
 		if (typeof jQuery !== 'undefined') {
 			if (jQuery.cookie) {
 				const originalJQueryCookie = jQuery.cookie;
-				jQuery.cookie = function(name, value, options) {
+				jQuery.cookie = function (name, value, options) {
 					if (value !== undefined) {
 						const domain = options && options.domain ? options.domain : '';
 						const path = options && options.path ? options.path : '';
@@ -527,7 +530,7 @@
 			// Also block $.cookie if it exists.
 			if (jQuery.fn && jQuery.fn.cookie) {
 				const originalJQueryFnCookie = jQuery.fn.cookie;
-				jQuery.fn.cookie = function(name, value, options) {
+				jQuery.fn.cookie = function (name, value, options) {
 					if (value !== undefined) {
 						const domain = options && options.domain ? options.domain : '';
 						const path = options && options.path ? options.path : '';
@@ -543,7 +546,7 @@
 		// Block common cookie libraries.
 		if (typeof Cookies !== 'undefined' && Cookies.set) {
 			const originalCookiesSet = Cookies.set;
-			Cookies.set = function(name, value, options) {
+			Cookies.set = function (name, value, options) {
 				const domain = options && options.domain ? options.domain : '';
 				const path = options && options.path ? options.path : '';
 				if (shouldBlockCookieByCategory(name, domain, path)) {
@@ -556,7 +559,7 @@
 		// Block js-cookie library.
 		if (typeof window.Cookies !== 'undefined' && window.Cookies.set) {
 			const originalCookiesSet = window.Cookies.set;
-			window.Cookies.set = function(name, value, options) {
+			window.Cookies.set = function (name, value, options) {
 				const domain = options && options.domain ? options.domain : '';
 				const path = options && options.path ? options.path : '';
 				if (shouldBlockCookieByCategory(name, domain, path)) {
@@ -576,7 +579,7 @@
 		if (typeof window.Sourcebuster !== 'undefined') {
 			if (window.Sourcebuster.set) {
 				const originalSourcebusterSet = window.Sourcebuster.set;
-				window.Sourcebuster.set = function() {
+				window.Sourcebuster.set = function () {
 					// Check if analytics category is allowed.
 					const categoryPrefs = getCategoryPreferences();
 					if (categoryPrefs && categoryPrefs['analytics'] === false) {
@@ -601,10 +604,10 @@
 			let sbjsValue = null;
 			Object.defineProperty(window, 'sbjs', {
 				configurable: true,
-				get: function() {
+				get: function () {
 					return sbjsValue;
 				},
-				set: function(value) {
+				set: function (value) {
 					sbjsValue = value;
 					// Immediately block sbjs methods if value is set.
 					if (value && typeof value === 'object') {
@@ -615,20 +618,20 @@
 		} catch (e) {
 			// If defineProperty fails, try to block when it appears.
 		}
-		
+
 		// Also try to block Sourcebuster.
 		try {
 			let sourcebusterValue = null;
 			Object.defineProperty(window, 'Sourcebuster', {
 				configurable: true,
-				get: function() {
+				get: function () {
 					return sourcebusterValue;
 				},
-				set: function(value) {
+				set: function (value) {
 					sourcebusterValue = value;
 					if (value && typeof value === 'object' && value.set) {
 						const originalSet = value.set;
-						value.set = function() {
+						value.set = function () {
 							const categoryPrefs = getCategoryPreferences();
 							if (categoryPrefs && categoryPrefs['analytics'] === false) {
 								return false;
@@ -645,7 +648,7 @@
 			// Silently fail.
 		}
 	}
-	
+
 	/**
 	 * Block sbjs methods.
 	 *
@@ -655,11 +658,11 @@
 		if (!sbjsObj) {
 			return;
 		}
-		
+
 		// Block sbjs.get method.
 		if (sbjsObj.get && typeof sbjsObj.get === 'function') {
 			const originalGet = sbjsObj.get;
-			sbjsObj.get = function() {
+			sbjsObj.get = function () {
 				const categoryPrefs = getCategoryPreferences();
 				if (categoryPrefs && categoryPrefs['analytics'] === false) {
 					return null;
@@ -670,11 +673,11 @@
 				return originalGet.apply(this, arguments);
 			};
 		}
-		
+
 		// Block sbjs.set method.
 		if (sbjsObj.set && typeof sbjsObj.set === 'function') {
 			const originalSet = sbjsObj.set;
-			sbjsObj.set = function() {
+			sbjsObj.set = function () {
 				const categoryPrefs = getCategoryPreferences();
 				if (categoryPrefs && categoryPrefs['analytics'] === false) {
 					return false;
@@ -686,39 +689,39 @@
 			};
 		}
 	}
-	
+
 	// Set up proactive blocking before initialization.
 	setupProactiveSbjsBlocking();
-	
+
 	// Initialize immediately.
 	initCookieBlocking();
 
 	// Aggressive cookie monitoring and deletion when blocking is active.
 	let cookieMonitorInterval = null;
-	
+
 	function startCookieMonitoring() {
 		if (cookieMonitorInterval) {
 			return; // Already monitoring.
 		}
-		
+
 		// Don't start monitoring if we're in a reload situation.
 		const isReloading = sessionStorage.getItem('gdpr_reloading') === 'true';
 		if (isReloading) {
 			return;
 		}
-		
-		cookieMonitorInterval = setInterval(function() {
+
+		cookieMonitorInterval = setInterval(function () {
 			// Check again if we're reloading and stop if so.
 			const stillReloading = sessionStorage.getItem('gdpr_reloading') === 'true';
 			if (stillReloading) {
 				stopCookieMonitoring();
 				return;
 			}
-			
+
 			const shouldBlock = shouldBlockCookies();
 			const categoryPrefs = getCategoryPreferences();
 			const hasCategoryPrefs = categoryPrefs && Object.keys(categoryPrefs).length > 0;
-			
+
 			if (shouldBlock) {
 				// Simple mode: delete all cookies.
 				deleteAllCookies();
@@ -750,7 +753,7 @@
 		const initialShouldBlock = shouldBlockCookies();
 		const initialCategoryPrefs = getCategoryPreferences();
 		const initialHasCategoryPrefs = initialCategoryPrefs && Object.keys(initialCategoryPrefs).length > 0;
-		
+
 		if (initialShouldBlock || initialHasCategoryPrefs) {
 			startCookieMonitoring();
 		}
@@ -758,17 +761,17 @@
 
 	// Re-initialize periodically to catch new cookie-setting methods.
 	// Use a longer interval to avoid performance issues.
-	const checkInterval = setInterval(function() {
+	const checkInterval = setInterval(function () {
 		// Don't re-initialize if we're reloading.
 		const isReloading = sessionStorage.getItem('gdpr_reloading') === 'true';
 		if (isReloading) {
 			return;
 		}
-		
+
 		const shouldBlock = shouldBlockCookies();
 		const categoryPrefs = getCategoryPreferences();
 		const hasCategoryPrefs = categoryPrefs && Object.keys(categoryPrefs).length > 0;
-		
+
 		if (shouldBlock || hasCategoryPrefs) {
 			initCookieBlocking();
 			if (shouldBlock || hasCategoryPrefs) {
@@ -782,7 +785,7 @@
 	// Re-check on preference change (for dynamic updates).
 	if (typeof window !== 'undefined') {
 		// Listen for storage events (from other tabs).
-		window.addEventListener('storage', function(e) {
+		window.addEventListener('storage', function (e) {
 			if (e.key === 'gdpr_cookie_consent_preference') {
 				initCookieBlocking();
 				// Delete cookies if declined.
@@ -793,12 +796,12 @@
 		});
 
 		// Expose function to re-initialize blocking (for use by widget handler).
-		window.gdprCookieBlockerInit = function() {
+		window.gdprCookieBlockerInit = function () {
 			initCookieBlocking();
 			const shouldBlock = shouldBlockCookies();
 			const categoryPrefs = getCategoryPreferences();
 			const hasCategoryPrefs = categoryPrefs && Object.keys(categoryPrefs).length > 0;
-			
+
 			if (shouldBlock) {
 				deleteAllCookies();
 				deleteCookiesByPrefix('sbjs_');
@@ -814,7 +817,7 @@
 
 	// Clean up intervals when page unloads.
 	if (typeof window !== 'undefined') {
-		window.addEventListener('beforeunload', function() {
+		window.addEventListener('beforeunload', function () {
 			clearInterval(checkInterval);
 			stopCookieMonitoring();
 		});

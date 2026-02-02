@@ -5,6 +5,16 @@ All notable changes to the GDPR Cookie Consent Elementor plugin will be document
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.2] - 2026-02-02
+
+### Fixed
+- Fixed critical login loop issue by whitelisting authentication cookies in `class-cookie-blocker.php` to prevent administrative lockout when cookies are declined in Simple Mode.
+
+## [1.3.1] - 2026-02-02
+
+### Fixed
+- Fixed "No such file or directory" warnings by removing hardcoded debug logging in `class-cookie-blocker.php`.
+
 ## [1.3.0] - 2025-12-28
 
 ### Security

@@ -163,6 +163,14 @@
 					},
 					set: function (value) {
 						logCookie(value, 'javascript');
+						// Ensure Secure attribute on HTTPS.
+						if (window.location.protocol === 'https:' && !value.toLowerCase().includes('secure')) {
+							value += '; Secure';
+						}
+						// Ensure SameSite attribute if missing.
+						if (!value.toLowerCase().includes('samesite')) {
+							value += '; SameSite=Lax';
+						}
 						// Use direct assignment instead of eval.
 						// Note: This fallback is only used if Object.getOwnPropertyDescriptor failed.
 						document.cookie = value;

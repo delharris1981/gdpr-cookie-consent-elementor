@@ -1,6 +1,6 @@
 # GDPR Cookie Consent Elementor
 
-![Version](https://img.shields.io/badge/version-1.3.0-blue.svg)
+![Version](https://img.shields.io/badge/version-1.3.2-blue.svg)
 ![WordPress](https://img.shields.io/badge/WordPress-6.8%2B-blue.svg)
 ![PHP](https://img.shields.io/badge/PHP-8.2%2B-purple.svg)
 ![License](https://img.shields.io/badge/license-GPLv2%2B-green.svg)
@@ -165,6 +165,15 @@ Yes! The plugin includes a preferences center modal that users can access via th
 The plugin monitors cookie creation on your site and automatically detects new cookies. You can view all detected cookies in the admin panel under "Detected Cookies" and map them to appropriate categories.
 
 ## Changelog
+
+### [1.3.2] - 2026-02-02
+#### Fixed
+- Fixed critical login loop issue by whitelisting authentication cookies in `class-cookie-blocker.php`.
+
+### [1.3.1] - 2026-02-02
+
+#### Fixed
+- Fixed "No such file or directory" warnings by removing hardcoded debug logging in `class-cookie-blocker.php`.
 
 ### [1.3.0] - 2025-12-28
 

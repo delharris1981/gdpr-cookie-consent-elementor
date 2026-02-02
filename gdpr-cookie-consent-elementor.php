@@ -3,7 +3,7 @@
  * Plugin Name: GDPR Cookie Consent Elementor
  * Plugin URI: https://github.com/delharris1981/gdpr-cookie-consent-elementor/tree/main
  * Description: A custom Elementor widget for GDPR cookie consent with customizable text, buttons, and styling options. Blocks all cookies when declined.
- * Version: 1.3.0
+ * Version: 1.3.2
  * Author: Panda ADV
  * Author URI: 
  * Requires PHP: 8.2
@@ -15,25 +15,26 @@
  * @package GDPR_Cookie_Consent_Elementor
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
+if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly.
 }
 
 // Define plugin constants.
-define( 'GDPR_CCE_VERSION', '1.3.0' );
-define( 'GDPR_CCE__FILE__', __FILE__ );
-define( 'GDPR_CCE_PLUGIN_BASE', plugin_basename( GDPR_CCE__FILE__ ) );
-define( 'GDPR_CCE_PATH', plugin_dir_path( GDPR_CCE__FILE__ ) );
-define( 'GDPR_CCE_URL', plugins_url( '/', GDPR_CCE__FILE__ ) );
-define( 'GDPR_CCE_ASSETS_PATH', GDPR_CCE_PATH . 'assets/' );
-define( 'GDPR_CCE_ASSETS_URL', GDPR_CCE_URL . 'assets/' );
+define('GDPR_CCE_VERSION', '1.3.2');
+define('GDPR_CCE__FILE__', __FILE__);
+define('GDPR_CCE_PLUGIN_BASE', plugin_basename(GDPR_CCE__FILE__));
+define('GDPR_CCE_PATH', plugin_dir_path(GDPR_CCE__FILE__));
+define('GDPR_CCE_URL', plugins_url('/', GDPR_CCE__FILE__));
+define('GDPR_CCE_ASSETS_PATH', GDPR_CCE_PATH . 'assets/');
+define('GDPR_CCE_ASSETS_URL', GDPR_CCE_URL . 'assets/');
 
 /**
  * Main plugin class.
  *
  * @since 1.0.0
  */
-final class GDPR_Cookie_Consent_Elementor {
+final class GDPR_Cookie_Consent_Elementor
+{
 
 	/**
 	 * Plugin instance.
@@ -54,8 +55,9 @@ final class GDPR_Cookie_Consent_Elementor {
 	 *
 	 * @return GDPR_Cookie_Consent_Elementor
 	 */
-	public static function instance() {
-		if ( is_null( self::$instance ) ) {
+	public static function instance()
+	{
+		if (is_null(self::$instance)) {
 			self::$instance = new self();
 		}
 		return self::$instance;
@@ -64,7 +66,8 @@ final class GDPR_Cookie_Consent_Elementor {
 	/**
 	 * Constructor.
 	 */
-	private function __construct() {
+	private function __construct()
+	{
 		$this->init();
 	}
 
@@ -73,32 +76,33 @@ final class GDPR_Cookie_Consent_Elementor {
 	 *
 	 * @return void
 	 */
-	private function init() {
+	private function init()
+	{
 		// Load and initialize PHP cookie blocker early (before headers are sent).
 		$this->init_cookie_blocker();
 
 		// Check if Elementor is installed and activated.
-		add_action( 'plugins_loaded', array( $this, 'check_elementor_dependency' ) );
+		add_action('plugins_loaded', array($this, 'check_elementor_dependency'));
 
 		// Initialize admin settings.
-		if ( is_admin() ) {
+		if (is_admin()) {
 			require_once GDPR_CCE_PATH . 'includes/class-admin-settings.php';
 			new \GDPR_Cookie_Consent_Elementor\Admin_Settings();
 		}
 
 		// Output cookie blocker as early as possible (before wp_head).
-		add_action( 'wp_head', array( $this, 'output_cookie_blocker_inline' ), 0 );
+		add_action('wp_head', array($this, 'output_cookie_blocker_inline'), 0);
 
 		// Enqueue global cookie blocker script early.
-		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_cookie_blocker' ), 1 );
+		add_action('wp_enqueue_scripts', array($this, 'enqueue_cookie_blocker'), 1);
 
 		// Note: Cookie detector script is enqueued by Cookie_Detector class.
 
 		// Register scripts early so they're available for widget dependencies.
-		add_action( 'wp_enqueue_scripts', array( $this, 'register_scripts' ), 0 );
+		add_action('wp_enqueue_scripts', array($this, 'register_scripts'), 0);
 
 		// Initialize defaults on activation.
-		register_activation_hook( GDPR_CCE__FILE__, array( $this, 'activate' ) );
+		register_activation_hook(GDPR_CCE__FILE__, array($this, 'activate'));
 	}
 
 	/**
@@ -107,7 +111,8 @@ final class GDPR_Cookie_Consent_Elementor {
 	 *
 	 * @return void
 	 */
-	private function init_cookie_blocker() {
+	private function init_cookie_blocker()
+	{
 		// Require cookie blocker class.
 		require_once GDPR_CCE_PATH . 'includes/class-cookie-blocker.php';
 
@@ -135,12 +140,13 @@ final class GDPR_Cookie_Consent_Elementor {
 	 *
 	 * @return void
 	 */
-	public function register_scripts() {
+	public function register_scripts()
+	{
 		// Register widget frontend script.
 		wp_register_script(
 			'gdpr-widget-frontend',
 			GDPR_CCE_ASSETS_URL . 'js/gdpr-widget-frontend.js',
-			array( 'jquery' ),
+			array('jquery'),
 			GDPR_CCE_VERSION,
 			true
 		);
@@ -151,14 +157,15 @@ final class GDPR_Cookie_Consent_Elementor {
 	 *
 	 * @return void
 	 */
-	public function check_elementor_dependency() {
-		if ( ! did_action( 'elementor/loaded' ) ) {
-			add_action( 'admin_notices', array( $this, 'elementor_missing_notice' ) );
+	public function check_elementor_dependency()
+	{
+		if (!did_action('elementor/loaded')) {
+			add_action('admin_notices', array($this, 'elementor_missing_notice'));
 			return;
 		}
 
 		// Register widget.
-		add_action( 'elementor/widgets/register', array( $this, 'register_widgets' ) );
+		add_action('elementor/widgets/register', array($this, 'register_widgets'));
 	}
 
 	/**
@@ -166,15 +173,16 @@ final class GDPR_Cookie_Consent_Elementor {
 	 *
 	 * @return void
 	 */
-	public function elementor_missing_notice() {
+	public function elementor_missing_notice()
+	{
 		$message = sprintf(
 			/* translators: 1: Plugin name 2: Elementor */
-			esc_html__( '%1$s requires %2$s to be installed and activated.', 'gdpr-cookie-consent-elementor' ),
-			'<strong>' . esc_html__( 'GDPR Cookie Consent Elementor', 'gdpr-cookie-consent-elementor' ) . '</strong>',
-			'<strong>' . esc_html__( 'Elementor', 'gdpr-cookie-consent-elementor' ) . '</strong>'
+			esc_html__('%1$s requires %2$s to be installed and activated.', 'gdpr-cookie-consent-elementor'),
+			'<strong>' . esc_html__('GDPR Cookie Consent Elementor', 'gdpr-cookie-consent-elementor') . '</strong>',
+			'<strong>' . esc_html__('Elementor', 'gdpr-cookie-consent-elementor') . '</strong>'
 		);
 
-		printf( '<div class="notice notice-warning is-dismissible"><p>%s</p></div>', wp_kses_post( $message ) );
+		printf('<div class="notice notice-warning is-dismissible"><p>%s</p></div>', wp_kses_post($message));
 	}
 
 	/**
@@ -183,9 +191,10 @@ final class GDPR_Cookie_Consent_Elementor {
 	 * @param \Elementor\Widgets_Manager $widgets_manager Elementor widgets manager.
 	 * @return void
 	 */
-	public function register_widgets( $widgets_manager ) {
+	public function register_widgets($widgets_manager)
+	{
 		require_once GDPR_CCE_PATH . 'includes/class-gdpr-widget.php';
-		$widgets_manager->register( new \GDPR_Cookie_Consent_Elementor\Widgets\GDPR_Widget() );
+		$widgets_manager->register(new \GDPR_Cookie_Consent_Elementor\Widgets\GDPR_Widget());
 	}
 
 	/**
@@ -195,7 +204,8 @@ final class GDPR_Cookie_Consent_Elementor {
 	 *
 	 * @return void
 	 */
-	public function enqueue_cookie_blocker() {
+	public function enqueue_cookie_blocker()
+	{
 		// Also enqueue as external file as backup.
 		wp_enqueue_script(
 			'gdpr-cookie-blocker',
@@ -209,7 +219,7 @@ final class GDPR_Cookie_Consent_Elementor {
 		wp_enqueue_script(
 			'gdpr-widget-frontend',
 			GDPR_CCE_ASSETS_URL . 'js/gdpr-widget-frontend.js',
-			array( 'jquery' ),
+			array('jquery'),
 			GDPR_CCE_VERSION,
 			true // Load in footer.
 		);
@@ -219,7 +229,7 @@ final class GDPR_Cookie_Consent_Elementor {
 			'gdpr-widget-frontend',
 			'gdprCookieConsent',
 			array(
-				'ajaxurl' => admin_url( 'admin-ajax.php' ),
+				'ajaxurl' => admin_url('admin-ajax.php'),
 			)
 		);
 
@@ -237,24 +247,25 @@ final class GDPR_Cookie_Consent_Elementor {
 	 *
 	 * @return void
 	 */
-	public function output_cookie_blocker_inline() {
-		$blocker_file      = GDPR_CCE_ASSETS_PATH . 'js/gdpr-cookie-blocker.js';
-		$real_blocker_path = realpath( $blocker_file );
-		$real_assets_path  = realpath( GDPR_CCE_ASSETS_PATH );
+	public function output_cookie_blocker_inline()
+	{
+		$blocker_file = GDPR_CCE_ASSETS_PATH . 'js/gdpr-cookie-blocker.js';
+		$real_blocker_path = realpath($blocker_file);
+		$real_assets_path = realpath(GDPR_CCE_ASSETS_PATH);
 
-		if ( ! $real_blocker_path || ! $real_assets_path ) {
+		if (!$real_blocker_path || !$real_assets_path) {
 			return;
 		}
 
 		// Ensure the blocker file resides within the expected assets directory.
-		if ( 0 !== strpos( $real_blocker_path, $real_assets_path ) || ! is_readable( $real_blocker_path ) ) {
+		if (0 !== strpos($real_blocker_path, $real_assets_path) || !is_readable($real_blocker_path)) {
 			return;
 		}
 
-		$blocker_code = file_get_contents( $real_blocker_path );
-		if ( false !== $blocker_code && '' !== $blocker_code ) {
+		$blocker_code = file_get_contents($real_blocker_path);
+		if (false !== $blocker_code && '' !== $blocker_code) {
 			// Safely print inline script using core helper.
-			wp_print_inline_script_tag( $blocker_code );
+			wp_print_inline_script_tag($blocker_code);
 		}
 	}
 
@@ -265,7 +276,8 @@ final class GDPR_Cookie_Consent_Elementor {
 	 *
 	 * @return void
 	 */
-	public function activate() {
+	public function activate()
+	{
 		require_once GDPR_CCE_PATH . 'includes/class-cookie-category-manager.php';
 		require_once GDPR_CCE_PATH . 'includes/class-cookie-category-defaults.php';
 
@@ -273,15 +285,15 @@ final class GDPR_Cookie_Consent_Elementor {
 		$defaults = new \GDPR_Cookie_Consent_Elementor\Cookie_Category_Defaults();
 
 		// Initialize default categories if none exist.
-		$categories = $category_manager->get_categories( false );
-		if ( empty( $categories ) ) {
-			$category_manager->save_categories( $defaults->get_default_categories() );
+		$categories = $category_manager->get_categories(false);
+		if (empty($categories)) {
+			$category_manager->save_categories($defaults->get_default_categories());
 		}
 
 		// Initialize default mappings if none exist.
-		$mappings = $category_manager->get_cookie_mappings( false );
-		if ( empty( $mappings ) ) {
-			update_option( \GDPR_Cookie_Consent_Elementor\Cookie_Category_Manager::OPTION_MAPPINGS, $defaults->get_default_mappings() );
+		$mappings = $category_manager->get_cookie_mappings(false);
+		if (empty($mappings)) {
+			update_option(\GDPR_Cookie_Consent_Elementor\Cookie_Category_Manager::OPTION_MAPPINGS, $defaults->get_default_mappings());
 		}
 	}
 }
@@ -291,7 +303,8 @@ final class GDPR_Cookie_Consent_Elementor {
  *
  * @return GDPR_Cookie_Consent_Elementor
  */
-function gdpr_cookie_consent_elementor() {
+function gdpr_cookie_consent_elementor()
+{
 	return GDPR_Cookie_Consent_Elementor::instance();
 }
 
